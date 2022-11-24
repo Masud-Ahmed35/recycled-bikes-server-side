@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 require("dotenv").config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, Collection } = require('mongodb');
 
 const app = express();
 const port = process.env.PORT || 7007;
@@ -15,6 +15,10 @@ app.use(express.json());
 // -------Database Connection-------
 const uri = `mongodb+srv://${process.env.DB_NAME}:${process.env.DB_PASSWORD}@cluster0.vvll70g.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+
+// All Collection
+const categoriesCollection = client.db('recycledBikes').collection('categories');
+const usersCollection = client.db('recycledBikes').collection('users');
 
 
 // Database Connect Function
@@ -36,6 +40,29 @@ app.get('/', (req, res) => {
             success: true,
             message: 'Recycled-Bikes Server is Running.....'
         });
+
+    } catch (error) {
+        res.send({
+            success: false,
+            error: error.message
+        })
+    }
+})
+
+// Save All Users 
+app.put('/users/:email', async (req, res) => {
+    try {
+        const email = req.params.email;
+        const user = req.body;
+        const filter = { email: email };
+        const options = { upsert: true };
+        const updateDoc = {
+            $set: user
+        }
+        const result = await usersCollection.updateOne(filter, updateDoc, options);
+        const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1d' });
+
+        res.send({ result, token });
 
     } catch (error) {
         res.send({
