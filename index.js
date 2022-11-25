@@ -72,6 +72,20 @@ app.put('/users/:email', async (req, res) => {
     }
 })
 
+// Get All Categories 
+app.get('/categories', async (req, res) => {
+    try {
+        const result = await categoriesCollection.find({}).toArray();
+        res.send(result);
+
+    } catch (error) {
+        res.send({
+            success: false,
+            error: error.message
+        })
+    }
+})
+
 // Save all Category
 app.post('/categories/:email', async (req, res) => {
     try {
