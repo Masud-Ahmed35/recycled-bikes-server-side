@@ -19,6 +19,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 // All Collection
 const categoriesCollection = client.db('recycledBikes').collection('categories');
 const usersCollection = client.db('recycledBikes').collection('users');
+const productsCollection = client.db('recycledBikes').collection('products');
 
 
 // Database Connect Function
@@ -93,6 +94,22 @@ app.post('/categories/:email', async (req, res) => {
         const category = req.body;
 
         const result = await categoriesCollection.insertOne(category);
+        res.send(result);
+
+    } catch (error) {
+        res.send({
+            success: false,
+            error: error.message
+        })
+    }
+})
+
+// Save all Products 
+app.put('/products', async (req, res) => {
+    try {
+        const product = req.body;
+
+        const result = await productsCollection.insertOne(product);
         res.send(result);
 
     } catch (error) {
