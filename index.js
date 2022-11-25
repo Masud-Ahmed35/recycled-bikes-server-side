@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 require("dotenv").config();
-const { MongoClient, ServerApiVersion, Collection } = require('mongodb');
+const { MongoClient, ServerApiVersion, Collection, ObjectId } = require('mongodb');
 
 const app = express();
 const port = process.env.PORT || 7007;
@@ -41,6 +41,20 @@ app.get('/', (req, res) => {
             success: true,
             message: 'Recycled-Bikes Server is Running.....'
         });
+
+    } catch (error) {
+        res.send({
+            success: false,
+            error: error.message
+        })
+    }
+})
+
+app.get('/users/:email', async (req, res) => {
+    try {
+        const email = req.params.email;
+        const result = await usersCollection.findOne({ email: email });
+        res.send(result);
 
     } catch (error) {
         res.send({
