@@ -49,7 +49,7 @@ app.get('/', (req, res) => {
     }
 })
 
-// Save All Users 
+// Save All Users
 app.put('/users/:email', async (req, res) => {
     try {
         const email = req.params.email;
@@ -63,6 +63,23 @@ app.put('/users/:email', async (req, res) => {
         const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1d' });
 
         res.send({ result, token });
+
+    } catch (error) {
+        res.send({
+            success: false,
+            error: error.message
+        })
+    }
+})
+
+// Save all Category
+app.post('/categories/:email', async (req, res) => {
+    try {
+        const email = req.params.email;
+        const category = req.body;
+
+        const result = await categoriesCollection.insertOne(category);
+        res.send(result);
 
     } catch (error) {
         res.send({
