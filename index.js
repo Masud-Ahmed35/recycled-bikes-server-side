@@ -133,6 +133,21 @@ app.get('/products/:id', async (req, res) => {
         })
     }
 })
+// get product by seller email
+app.get('/sellerProducts/:email', async (req, res) => {
+    try {
+        const email = req.params.email;
+        const query = { sellerEmail: email };
+        const result = await productsCollection.find(query).toArray();
+        res.send(result);
+
+    } catch (error) {
+        res.send({
+            success: false,
+            error: error.message
+        })
+    }
+})
 
 // Save all Products 
 app.put('/products', async (req, res) => {
@@ -140,6 +155,20 @@ app.put('/products', async (req, res) => {
         const product = req.body;
 
         const result = await productsCollection.insertOne(product);
+        res.send(result);
+
+    } catch (error) {
+        res.send({
+            success: false,
+            error: error.message
+        })
+    }
+})
+
+app.delete('/products/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const result = await productsCollection.deleteOne({ _id: ObjectId(id) });
         res.send(result);
 
     } catch (error) {
