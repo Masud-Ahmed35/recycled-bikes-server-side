@@ -179,8 +179,21 @@ app.delete('/products/:id', async (req, res) => {
         })
     }
 })
+// get advertise...............
+app.get('/advertise', async (req, res) => {
+    try {
+        const result = await advertiseCollection.find({}).toArray();
+        res.send(result);
 
-// Advertise................
+    } catch (error) {
+        res.send({
+            success: false,
+            error: error.message
+        })
+    }
+})
+
+// post Advertise................
 app.post('/advertise', async (req, res) => {
     try {
         const product = req.body;
