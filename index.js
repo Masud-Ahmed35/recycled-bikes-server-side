@@ -221,6 +221,21 @@ app.get('/allSeller', async (req, res) => {
         })
     }
 })
+// delete seller 
+app.delete('/allSeller/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const result = await usersCollection.deleteOne({ _id: ObjectId(id) });
+        res.send(result);
+
+    } catch (error) {
+        res.send({
+            success: false,
+            error: error.message
+        })
+    }
+})
+
 // get all buyer 
 app.get('/allBuyer', async (req, res) => {
     try {
