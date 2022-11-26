@@ -118,6 +118,22 @@ app.post('/categories/:email', async (req, res) => {
     }
 })
 
+// get product by category id 
+app.get('/products/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const query = { categoryId: id };
+        const result = await productsCollection.find(query).toArray();
+        res.send(result);
+
+    } catch (error) {
+        res.send({
+            success: false,
+            error: error.message
+        })
+    }
+})
+
 // Save all Products 
 app.put('/products', async (req, res) => {
     try {
