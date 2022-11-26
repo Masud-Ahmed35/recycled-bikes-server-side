@@ -221,6 +221,23 @@ app.get('/allSeller', async (req, res) => {
         })
     }
 })
+// Verify a seller 
+app.patch('/allSeller/:id', async (req, res) => {
+    try {
+        const id = req.params.id
+        const data = req.body;
+        const query = { _id: ObjectId(id) }
+        const result = await usersCollection.updateOne(query, { $set: data });
+        res.send(result);
+
+    } catch (error) {
+        res.send({
+            success: false,
+            error: error.message
+        })
+    }
+})
+
 // delete seller 
 app.delete('/allSeller/:id', async (req, res) => {
     try {
