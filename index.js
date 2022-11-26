@@ -20,6 +20,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 const categoriesCollection = client.db('recycledBikes').collection('categories');
 const usersCollection = client.db('recycledBikes').collection('users');
 const productsCollection = client.db('recycledBikes').collection('products');
+const advertiseCollection = client.db('recycledBikes').collection('advertise');
 
 
 // Database Connect Function
@@ -169,6 +170,21 @@ app.delete('/products/:id', async (req, res) => {
     try {
         const id = req.params.id;
         const result = await productsCollection.deleteOne({ _id: ObjectId(id) });
+        res.send(result);
+
+    } catch (error) {
+        res.send({
+            success: false,
+            error: error.message
+        })
+    }
+})
+
+// Advertise................
+app.post('/advertise', async (req, res) => {
+    try {
+        const product = req.body;
+        const result = await advertiseCollection.insertOne(product);
         res.send(result);
 
     } catch (error) {
