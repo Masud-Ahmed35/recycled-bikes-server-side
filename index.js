@@ -250,6 +250,20 @@ app.get('/allBuyer', async (req, res) => {
         })
     }
 })
+// delete seller 
+app.delete('/allBuyer/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const result = await usersCollection.deleteOne({ _id: ObjectId(id) });
+        res.send(result);
+
+    } catch (error) {
+        res.send({
+            success: false,
+            error: error.message
+        })
+    }
+})
 
 // Listen Server
 app.listen(port, () => {
