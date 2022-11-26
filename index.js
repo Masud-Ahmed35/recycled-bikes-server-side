@@ -134,6 +134,21 @@ app.get('/products/:id', async (req, res) => {
         })
     }
 })
+// Reported Products
+app.get('/reportedProducts', async (req, res) => {
+    try {
+        const query = { report: 'reported' }
+        const result = await productsCollection.find(query).toArray();
+        res.send(result);
+
+    } catch (error) {
+        res.send({
+            success: false,
+            error: error.message
+        })
+    }
+})
+
 // get product by seller email
 app.get('/sellerProducts/:email', async (req, res) => {
     try {
