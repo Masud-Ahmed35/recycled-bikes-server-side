@@ -208,6 +208,20 @@ app.post('/advertise', async (req, res) => {
     }
 })
 
+app.get('/allSeller', async (req, res) => {
+    try {
+        const query = { role: 'seller' }
+        const result = await usersCollection.find(query).toArray();
+        res.send(result);
+
+    } catch (error) {
+        res.send({
+            success: false,
+            error: error.message
+        })
+    }
+})
+
 // Listen Server
 app.listen(port, () => {
     console.log(`Server is Running on Port: ${port}`);
