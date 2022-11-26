@@ -165,6 +165,22 @@ app.put('/products', async (req, res) => {
         })
     }
 })
+// Report to admin api
+app.patch('/products/:id', async (req, res) => {
+    try {
+        const id = req.params.id
+        const data = req.body;
+        const query = { _id: ObjectId(id) }
+        const result = await productsCollection.updateOne(query, { $set: data });
+        res.send(result);
+
+    } catch (error) {
+        res.send({
+            success: false,
+            error: error.message
+        })
+    }
+})
 
 app.delete('/products/:id', async (req, res) => {
     try {
