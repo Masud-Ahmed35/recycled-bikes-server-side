@@ -207,10 +207,24 @@ app.post('/advertise', async (req, res) => {
         })
     }
 })
-
+// get all seller 
 app.get('/allSeller', async (req, res) => {
     try {
         const query = { role: 'seller' }
+        const result = await usersCollection.find(query).toArray();
+        res.send(result);
+
+    } catch (error) {
+        res.send({
+            success: false,
+            error: error.message
+        })
+    }
+})
+// get all buyer 
+app.get('/allBuyer', async (req, res) => {
+    try {
+        const query = { role: 'buyer' }
         const result = await usersCollection.find(query).toArray();
         res.send(result);
 
