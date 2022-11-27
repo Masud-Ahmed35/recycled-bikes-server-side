@@ -3,6 +3,7 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 require("dotenv").config();
 const { MongoClient, ServerApiVersion, Collection, ObjectId } = require('mongodb');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 const port = process.env.PORT || 7007;
@@ -22,6 +23,7 @@ const usersCollection = client.db('recycledBikes').collection('users');
 const productsCollection = client.db('recycledBikes').collection('products');
 const advertiseCollection = client.db('recycledBikes').collection('advertise');
 const ordersCollection = client.db('recycledBikes').collection('orders');
+const paymentsCollection = client.db('recycledBikes').collection('payments');
 
 
 // Database Connect Function
@@ -51,6 +53,55 @@ app.get('/', (req, res) => {
         })
     }
 })
+
+//Create Payment Intent 
+app.post('/create-payment-intent', async (req, res) => {
+    try {
+        const order = req.body;
+        const price = order.resalePrice;
+        const amount = parseFloat(parseFloat(price) * 100);
+
+        const paymentIntent = await stripe.paymentIntents.create({
+            currency: 'usd',
+            amount: amount,
+            "payment_method_types": ["card"],
+        });
+        res.send({
+            clientSecret: paymentIntent.client_secret,
+        });
+
+    } catch (error) {
+        res.send({
+            success: false,
+            error: error.message
+        })
+    }
+})
+app.post('/payments', async (req, res) => {
+    try {
+        const payment = req.body;
+        const result = await paymentsCollection.insertOne(payment);
+
+        const id = payment.bookingId;
+        const filter = { _id: ObjectId(id) };
+        const updatedDoc = {
+            $set: {
+                availability: 'paid',
+                transactionId: payment.transactionId
+            }
+        }
+        const updatedResult = await productsCollection.updateOne(filter, updatedDoc)
+
+        res.send(result);
+
+    } catch (error) {
+        res.send({
+            success: false,
+            error: error.message
+        })
+    }
+})
+
 
 app.get('/users/:email', async (req, res) => {
     try {
