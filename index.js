@@ -344,6 +344,21 @@ app.post('/orders', async (req, res) => {
     }
 })
 
+app.get('/paymentOrders/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const query = { _id: ObjectId(id) };
+        const result = await ordersCollection.findOne(query);
+        res.send(result);
+
+    } catch (error) {
+        res.send({
+            success: false,
+            error: error.message
+        })
+    }
+})
+
 app.get('/orders/:email', async (req, res) => {
     try {
         const email = req.params.email;
