@@ -21,6 +21,7 @@ const categoriesCollection = client.db('recycledBikes').collection('categories')
 const usersCollection = client.db('recycledBikes').collection('users');
 const productsCollection = client.db('recycledBikes').collection('products');
 const advertiseCollection = client.db('recycledBikes').collection('advertise');
+const ordersCollection = client.db('recycledBikes').collection('orders');
 
 
 // Database Connect Function
@@ -303,6 +304,51 @@ app.delete('/allBuyer/:id', async (req, res) => {
     try {
         const id = req.params.id;
         const result = await usersCollection.deleteOne({ _id: ObjectId(id) });
+        res.send(result);
+
+    } catch (error) {
+        res.send({
+            success: false,
+            error: error.message
+        })
+    }
+})
+
+// orders collection-----------------
+app.post('/orders', async (req, res) => {
+    try {
+        const order = req.body;
+        const result = await ordersCollection.insertOne(order);
+        res.send(result);
+
+    } catch (error) {
+        res.send({
+            success: false,
+            error: error.message
+        })
+    }
+})
+
+app.get('/orders/:email', async (req, res) => {
+    try {
+        const email = req.params.email;
+        const query = { buyerEmail: email };
+        const result = await ordersCollection.find(query).toArray();
+        res.send(result);
+
+    } catch (error) {
+        res.send({
+            success: false,
+            error: error.message
+        })
+    }
+})
+
+app.delete('/orders/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const query = { _id: ObjectId(id) };
+        const result = await ordersCollection.deleteOne(query);
         res.send(result);
 
     } catch (error) {
