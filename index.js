@@ -86,11 +86,19 @@ app.post('/payments', async (req, res) => {
         const filter = { _id: ObjectId(id) };
         const updatedDoc = {
             $set: {
-                availability: 'paid',
+                availability: 'sold',
                 transactionId: payment.transactionId
             }
         }
         const updatedResult = await productsCollection.updateOne(filter, updatedDoc)
+
+        const query = { _id: ObjectId(payment.ordersId) }
+        const anotherDoc = {
+            $set: {
+                availability: 'sold'
+            }
+        }
+        const anotherResult = await ordersCollection.updateOne(query, anotherDoc);
 
         res.send(result);
 
@@ -187,10 +195,10 @@ app.get('/products/:id', async (req, res) => {
     }
 })
 // get product by bookingId
-app.get('/products/:bookingId', async (req, res) => {
+app.get('/paymentProducts/:bookingId', async (req, res) => {
     try {
         const bookingId = req.params.bookingId;
-        const query = { _id: bookingId };
+        const query = { _id: ObjectId(bookingId) };
         const result = await productsCollection.findOne(query)
         res.send(result);
 
