@@ -135,6 +135,21 @@ app.get('/products/:id', async (req, res) => {
         })
     }
 })
+// get product by bookingId
+app.get('/products/:bookingId', async (req, res) => {
+    try {
+        const bookingId = req.params.bookingId;
+        const query = { _id: bookingId };
+        const result = await productsCollection.findOne(query)
+        res.send(result);
+
+    } catch (error) {
+        res.send({
+            success: false,
+            error: error.message
+        })
+    }
+})
 // Reported Products
 app.get('/reportedProducts', async (req, res) => {
     try {
