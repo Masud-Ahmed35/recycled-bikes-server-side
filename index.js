@@ -100,6 +100,9 @@ app.post('/payments', async (req, res) => {
         }
         const anotherResult = await ordersCollection.updateOne(query, anotherDoc);
 
+        const anotherQuery = { advertiseId: id }
+        const updateAdvertise = await advertiseCollection.deleteOne(anotherQuery);
+
         res.send(result);
 
     } catch (error) {
@@ -109,7 +112,6 @@ app.post('/payments', async (req, res) => {
         })
     }
 })
-
 
 app.get('/users/:email', async (req, res) => {
     try {
@@ -313,6 +315,7 @@ app.post('/advertise', async (req, res) => {
         })
     }
 })
+
 // get all seller 
 app.get('/allSeller', async (req, res) => {
     try {
